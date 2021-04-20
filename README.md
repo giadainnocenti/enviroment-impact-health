@@ -1,6 +1,6 @@
 # enviroment-impact-health
 
-# Initial idea
+# Project Goal
 Dashboard and visualizations to explore air quality and its health effects in the United States.
 
 # Flask Structure
@@ -17,7 +17,7 @@ Dashboard showing the info-graphics created to show the health and environment t
 ```
 /airquality-wildfires
 ```
-Additional dashboard to viasualize if a wild fire is impacting the air-quality.
+Additional dashboard to visualize if a wild fire is impacting the air-quality.
 
 # Data
 1. [Asthma](https://chronicdata.cdc.gov/Chronic-Disease-Indicators/U-S-Chronic-Disease-Indicators-Asthma/us8e-ubyj)
