@@ -1,4 +1,4 @@
 # enviroment-impact-health
 
 # Initial idea
-Is there a correlation between health issues (such as ...) and the quality of environment surrounding the individuals? 
+Dashboard and visualizations to explore air quality and it’s health effects in the United States
