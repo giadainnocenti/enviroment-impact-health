@@ -8,7 +8,7 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 	
-@app.route("/perState")
+@app.route("/per_state")
 def per_state():
     return render_template("per_state.html")
 
