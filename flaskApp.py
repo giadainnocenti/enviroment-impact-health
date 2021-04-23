@@ -8,17 +8,13 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 	
-@app.route("/per_state")
-def per_state():
-    return render_template("per_state.html")
+@app.route("/state/<state>")
+def state(state):
+    return render_template("state.html",state=state)
 
 @app.route("/about")
 def about():
     return render_template("about.html")
-
-@app.route("/scrape")
-def scrape():
-    return redirect("/", code=302)
 
 if __name__ == "__main__":
     app.run(debug=True)
