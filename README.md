@@ -3,6 +3,13 @@
 # Project Goal
 Dashboard and visualizations to explore air quality and its health effects in the United States.
 
+# Instructions
+
+Make sure to run the flask app by changing directory into the main project folder and running:
+```bash 
+python flaskApp.py
+```
+
 # Wireframe Goals
 
 These are the agreed upon wireframes for the dashboard we want to use. All these graphs and data are subject to change based on data availability and scope.
