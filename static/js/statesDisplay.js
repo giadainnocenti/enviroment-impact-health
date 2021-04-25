@@ -1,52 +1,109 @@
-const graphTitle = "US Air Quality by State";
+// https://plotly.com/javascript/reference/choropleth/#choropleth-visible
+const plotlyMapId = "usa-states-map";
+
+
+const stateSubPath = "state";
+const mapTopMargin = 0;
+const mapBottomMargin = 75;
+const mapNames = ["AirQuality", "Asthma"];
 const colorLabel = "Air Quality";
 const colorScale = [
-	[0, "rgb(242,240,247)"], [0.2, "rgb(218,218,235)"],
-	[0.4, "rgb(188,189,220)"], [0.6, "rgb(158,154,200)"],
-	[0.8, "rgb(117,107,177)"], [1, "rgb(84,39,143)"]
+	[0, "rgb(255,255,255)"],
+	[1, "rgb(0,0,255)"]
 ];
 
-function drawStates(states, values, hoverInfo) {
+var statesData = null;
+var selectedMap = null;
+var selectedYearIndex = 0;
+
+d3.json("/raw_data").then(function (rawData, err) {
+	if (err) throw err;
+
+	statesData = new StatesData(rawData);
+	var years = statesData.years;
+	var min = Math.min.apply(Math, years);
+	var max = Math.max.apply(Math, years);
+	selectedMap = mapNames[0];
+	selectedYearIndex = max - min;
+	setSliderValues(min, max, 1);
+	drawStates();
+
+}).catch(function (error) {
+	console.log(error);
+});
+
+function getDefaultTrace(graphName, values) {
 	var max = Math.max(values);
 	var min = Math.min(values);
-
-	var data = [{
+	return {
+		name: graphName,
 		type: "choropleth",
-		locationmode: "USA-states",
-		locations: states,
+		locations: StatesData.states,
 		z: values,
-		text: hoverInfo,
 		zmin: min,
 		zmax: max,
+		visible: "legendonly",
+		showlegend: true,
+		locationmode: "USA-states",
+		text: StatesData.states,
 		colorscale: colorScale,
 		colorbar: {
 			title: colorLabel,
-			thickness: 1
+			thickness: 15,
+			y: 0.25,
+			len: 0.75,
+			xanchor: "right"
 		}
-	}];
+	};
+}
 
-	var layout = {
-		title: graphTitle,
+function getDefaultLayout() {
+	return {
+		showlegend: true,
+		legend: {
+			x: 1,
+			y: 0.85,
+			xanchor: "right",
+		},
+		margin:
+		{
+			t: mapTopMargin,
+			b: mapBottomMargin
+		},
 		geo: {
 			scope: "usa",
 			showlakes: true,
 			lakecolor: "rgb(50,100,190)"
 		}
 	};
+}
 
-	Plotly.newPlot("usa-states-map", data, layout, { showLink: false })
-		.then(gd => gd.on('plotly_click', d => onStateClick((d.points || [])[0].location)));
+function drawStates() {
+	var traces = [
+		getDefaultTrace(mapNames[0], statesData.airQualityByIndex(selectedYearIndex)),
+		getDefaultTrace(mapNames[1], statesData.asthmaByIndex(selectedYearIndex))
+	];
+	var layout = getDefaultLayout();
+
+	var selectedMapIndex = mapNames.indexOf(selectedMap);
+	traces[selectedMapIndex].visible = true;
+
+	var plot = Plotly.newPlot(plotlyMapId, traces, layout, { showLink: false });
+
+	plot.then(gd => {
+		gd.on("plotly_click", d => onStateClick((d.points || [])[0].location));
+		gd.on("plotly_legendclick", d => onLegendClick(d.data[d.expandedIndex].name));
+	});
 }
 
 function onStateClick(stateAbbrev) {
-	window.location.href = "/state/" + stateAbbrev;
+	window.location.href = `/${stateSubPath}/${stateAbbrev}`;
 }
 
-d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv").then(function (csvData, err) {
-	if (err) throw err;
-
-	drawStates(["AL", "AK"], [100, 1000], ["cool", "beans"]);
-
-}).catch(function (error) {
-	console.log(error);
-});
+function onLegendClick(graphName) {
+	console.log(graphName);
+	if (graphName == selectedMap)
+		return;
+	selectedMap = graphName;
+	drawStates();
+}

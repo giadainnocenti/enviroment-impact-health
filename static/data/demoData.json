@@ -1,0 +1,46 @@
+{
+	"airQualityIndex": [
+		{
+			"name": "GA",
+			"year": 2019,
+			"average": 0.2
+		},
+		{
+			"name": "CA",
+			"year": 2019,
+			"average": 0.25
+		},
+		{
+			"name": "GA",
+			"year": 2020,
+			"average": 0.1
+		},
+		{
+			"name": "CA",
+			"year": 2020,
+			"average": 0.4
+		}
+	],
+	"asthmaMortalityRate": [
+		{
+			"name": "GA",
+			"year": 2019,
+			"asthmaMortalityRate": 15
+		},
+		{
+			"name": "CA",
+			"year": 2019,
+			"asthmaMortalityRate": 30
+		},
+		{
+			"name": "GA",
+			"year": 2020,
+			"asthmaMortalityRate": 26
+		},
+		{
+			"name": "CA",
+			"year": 2020,
+			"asthmaMortalityRate": 3
+		}
+	]
+}
