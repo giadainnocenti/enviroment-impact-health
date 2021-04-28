@@ -22,36 +22,38 @@ var layout = null;
 d3.json("/raw_data").then(function (rawData, err) {
 
 	statesData = new StatesData(rawData);
+	var dataPerState = statesData.airQuality;
+
 	var years = statesData.years;
 
-	var frames = getFrames(years, StatesData.states, [statesData.airQuality, statesData.asthma], null);
+	var frames = getFrames(years, StatesData.states, dataPerState, null);
 
-	var traces = [
-		getDefaultTrace(mapNames[0], statesData.airQuality[0]),
-		getDefaultTrace(mapNames[1], statesData.asthma[0])
+	var data = [
+		getDefaultTrace(mapNames[0], dataPerState[0]),
+		//getDefaultTrace(mapNames[1], statesData.asthma[0])
 	];
 
-	selectedMap = mapNames[0];
-	traces[0].visible = true;
+	//selectedMap = mapNames[0];
+	//traces[0].visible = true;
 
 	layout = getLayout(years);
 
-	var plot = Plotly.newPlot(plotlyMapId, traces, layout);
+	var plot = Plotly.newPlot(plotlyMapId, data, layout);
 
 	plot.then(gd => {
 		Plotly.addFrames(plotlyMapId, frames);
 		gd.on("plotly_click", d => onStateClick((d.points || [])[0].location));
-		gd.on("plotly_legendclick", d => onLegendClick(d.data[d.expandedIndex].name));
+		gd.on("plotly_sliderchange", d => {
+			var newYear = d.slider.active;
+			if (selectedYearIndex !== newYear)
+				onSliderChange(newYear);
+		});
+		gd.on("plotly_legendclick", d => {
+			var newMap = d.data[d.expandedIndex].name;
+			if (selectedMap !== newMap)
+				onLegendChange(newMap);
+		});
 	});
-
-	// Plotly.newPlot(plotlyMapId, traces, layout).then(function () {
-	// 	Plotly.addFrames(plotlyMapId, frames);
-	// });
-
-	// 	plot.then(gd => {
-	// 	gd.on("plotly_click", d => onStateClick((d.points || [])[0].location));
-	// 	gd.on("plotly_legendclick", d => onLegendClick(d.data[d.expandedIndex].name));
-	// });
 });
 
 function getFrames(years, locations, values, displayText) {
@@ -81,18 +83,17 @@ function getDefaultTrace(traceName, values) {
 	var min = Math.min(values);
 
 	return {
-		name: traceName,
+		//name: traceName,
 		type: 'choropleth',
-		locationmode: 'usa',
+		locationmode: 'USA-states',
 		locations: StatesData.states,
+		text: StatesData.states,
 		z: values,
 		zauto: false,
 		zmin: min,
 		zmax: max,
-		visible: "legendonly",
-		showlegend: true,
-		locationmode: "USA-states",
-		text: StatesData.states,
+		//visible: "legendonly",
+		//showlegend: true,
 		colorscale: colorScale,
 		colorbar: {
 			title: colorLabel,
@@ -122,7 +123,7 @@ function getLayout(years) {
 			showland: true,
 			showlakes: true,
 			lakecolor: 'rgb(255, 255, 255)',
-			subunitcolor: 'rgb(255, 255, 255)',
+			// subunitcolor: 'rgb(255, 255, 255)',
 			lonaxis: {},
 			lataxis: {}
 		},
@@ -166,7 +167,7 @@ function getLayout(years) {
 		],
 		sliders: [
 			{
-				active: 0,
+				active: selectedYearIndex,
 				steps: getSliderSteps(years),
 				x: 0.1,
 				y: 0,
@@ -191,6 +192,7 @@ function getLayout(years) {
 		]
 	};
 }
+
 function getSliderSteps(years) {
 
 	var min = Math.min.apply(Math, years);
@@ -218,68 +220,6 @@ function getSliderSteps(years) {
 	return sliderSteps;
 }
 
-// d3.json("/raw_data").then(function (rawData, err) {
-// 	if (err) throw err;
-
-// 	statesData = new StatesData(rawData);
-// 	var years = statesData.years;
-// 	var min = Math.min.apply(Math, years);
-// 	var max = Math.max.apply(Math, years);
-// 	selectedMap = mapNames[0];
-// 	selectedYearIndex = max - min;
-// 	setSliderValues(min, max, 1);
-// 	drawStates();
-
-// }).catch(function (error) {
-// 	console.log(error);
-// });
-
-// function getDefaultTrace(graphName, values) {
-// 	var max = Math.max(values);
-// 	var min = Math.min(values);
-// 	return {
-// 		name: graphName,
-// 		type: "choropleth",
-// 		locations: StatesData.states,
-// 		z: values,
-// 		zmin: min,
-// 		zmax: max,
-// 		visible: "legendonly",
-// 		showlegend: true,
-// 		locationmode: "USA-states",
-// 		text: StatesData.states,
-// 		colorscale: colorScale,
-// 		colorbar: {
-// 			title: colorLabel,
-// 			thickness: 15,
-// 			y: 0.25,
-// 			len: 0.75,
-// 			xanchor: "right"
-// 		}
-// 	};
-// }
-
-// function getDefaultLayout() {
-// 	return {
-// 		showlegend: true,
-// 		legend: {
-// 			x: 1,
-// 			y: 0.85,
-// 			xanchor: "right",
-// 		},
-// 		margin:
-// 		{
-// 			t: mapTopMargin,
-// 			b: mapBottomMargin
-// 		},
-// 		geo: {
-// 			scope: "usa",
-// 			showlakes: true,
-// 			lakecolor: "rgb(50,100,190)"
-// 		}
-// 	};
-// }
-
 function drawStates() {
 	var traces = [
 		getDefaultTrace(mapNames[0], statesData.airQualityByIndex(selectedYearIndex)),
@@ -302,24 +242,31 @@ function onStateClick(stateAbbrev) {
 	window.location.href = `/${stateSubPath}/${stateAbbrev}`;
 }
 
-function onLegendClick(graphName) {
-	console.log(graphName);
+function onSliderChange(yearIndex) {
+	console.log(yearIndex);
+}
 
-	if (graphName == selectedMap)
-		return;
+function onLegendChange(mapName) {
+	console.log(mapName);
 
-	selectedMap = graphName;
+	// 	if (graphName == selectedMap)
+	// 		return;
 
-	var index = mapNames.indexOf(selectedMap);
-console.log(selectedMap);
-console.log(index);
-	var traces = [
-		getDefaultTrace(mapNames[0], statesData.airQuality[0]),
-		getDefaultTrace(mapNames[1], statesData.asthma[0])
-	];
+	// 	selectedMap = graphName;
 
-	for (var i = 0; i < mapNames.length; i++)
-		traces[i].visible = (index == i) ? true : "legendonly";
+	// 	var index = mapNames.indexOf(selectedMap);
+	// 	 console.log(selectedMap);
+	// 	// console.log(index);
+	// 	// var traces = [
+	// 	// 	getDefaultTrace(mapNames[0], statesData.airQuality[0]),
+	// 	// 	getDefaultTrace(mapNames[1], statesData.asthma[0])
+	// 	// ];
 
-	Plotly.update(plotlyMapId, traces, layout);
+	// 	// for (var i = 0; i < mapNames.length; i++)
+	// 	// 	traces[i].visible = (index == i) ? true : "legendonly";
+	// 	var traces = [{},{}];
+	// 	traces[0].visible =  "legendonly";
+	// 	traces[1].visible = "legendonly";
+
+	// 	Plotly.update(plotlyMapId, traces, layout);
 }
