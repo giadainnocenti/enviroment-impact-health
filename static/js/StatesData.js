@@ -1,32 +1,45 @@
 class StatesData {
 
-	static states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"];
-	
+	mapNames = null;
+	scaleNames = null;
 	years = null;
-	airQuality = null;
-	asthma = null;
+	dataPerState = null;
+	length = 0;
 
 	constructor(rawData) {
 		// console.log(rawData);
 
+		this.mapNames = [];
+		this.scaleNames = [];
+
+		this.mapNames.push("AirQuality");
+		this.scaleNames.push("Air Quality");
 		var yearsAQI = rawData.airQualityIndex
 			.map(d => +d.year)
 			.filter((value, index, self) => self.indexOf(value) === index)
 			.sort();
 
+		this.mapNames.push("Asthma");
+		this.scaleNames.push("Asthma Rate");
 		var yearsAsthma = rawData.asthmaMortalityRate
 			.map(d => +d.year)
 			.filter((value, index, self) => self.indexOf(value) === index)
 			.sort();
 
 		this.years = StatesData.mergeArrays(yearsAQI, yearsAsthma);
-		this.airQuality = StatesData.pullOutAirQuality(this.years, rawData.airQualityIndex);
-		this.asthma = StatesData.pullOutAsthma(this.years, rawData.asthmaMortalityRate);
+		this.dataPerState = [
+			StatesData.pullOutAirQuality(this.years, rawData.airQualityIndex),
+			StatesData.pullOutAsthma(this.years, rawData.asthmaMortalityRate)
+		];
+		this.length = this.dataPerState.length;
 	}
 
+	get mapNames() { return this.mapNames; }
+	get scaleNames() { return this.scaleNames; }
+	get displayText() { return StatesData.states; }
 	get years() { return this.years; }
-	get airQuality() { return this.airQuality; }
-	get asthma() { return this.asthma; }
+	get dataPerState() { return [this.airQuality, this.asthma]; }
+	get length() { return this.length; }
 
 	airQualityByIndex(index) {
 		//console.log(index);
@@ -40,6 +53,7 @@ class StatesData {
 		return this.asthma[index];
 	}
 
+	// probably dont need this, filter func could be redundant for loop
 	static mergeArrays(a, b) {
 		// console.log(a);
 		// console.log(b);
@@ -63,12 +77,12 @@ class StatesData {
 		// console.log(rawData);
 
 		var y_length = years.length;
-		var airQuality = Array(y_length).fill(Array(StatesData.states.length).fill(0.0));
+		var airQuality = Array(y_length).fill(Array(States.length).fill(0.0));
 
 		var length = rawData.length;
 		for (var year = 0; year < y_length; year++)
 			for (var i = 0; i < length; i++) {
-				var state = StatesData.states.indexOf(rawData[i].name);
+				var state = States.indexOf(rawData[i].name);
 				var year = years.indexOf(+rawData[i].year);
 				if (state < 0 || year < 0) continue;
 				// parse data
@@ -82,12 +96,12 @@ class StatesData {
 		// console.log(rawData);
 
 		var y_length = years.length;
-		var asthma = Array(y_length).fill(Array(StatesData.states.length).fill(0.0));
+		var asthma = Array(y_length).fill(Array(States.length).fill(0.0));
 
 		var length = rawData.length;
 		for (var year = 0; year < y_length; year++)
 			for (var i = 0; i < length; i++) {
-				var state = StatesData.states.indexOf(rawData[i].name);
+				var state = States.indexOf(rawData[i].name);
 				var year = years.indexOf(+rawData[i].year);
 				if (state < 0 || year < 0) continue;
 				// parse data

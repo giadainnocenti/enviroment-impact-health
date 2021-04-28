@@ -6,42 +6,42 @@ const playDuration = 300;
 const stateSubPath = "state";
 const mapTopMargin = 0;
 const mapBottomMargin = 75;
-const mapNames = ["AirQuality", "Asthma"];
-const colorLabel = "Air Quality";
+
 const colorScale = [
 	[0, "rgb(255,255,255)"],
 	[1, "rgb(0,0,255)"]
 ];
 
 var statesData = null;
-var selectedMap = null;
+var minYear = 0;
+var maxYear = 1;
+var yearsLength = 1;
+
+var selectedMapIndex = 0;
 var selectedYearIndex = 0;
 
-var layout = null;
-
 d3.json("/raw_data").then(function (rawData, err) {
-
 	statesData = new StatesData(rawData);
-	var dataPerState = statesData.airQuality;
+	minYear = Math.min.apply(Math, statesData.years);
+	maxYear = Math.max.apply(Math, statesData.years);
+	yearsLength = maxYear - minYear;
+	createPlotlyStatesDisplay();
+});
 
-	var years = statesData.years;
+function createPlotlyStatesDisplay() {
 
-	var frames = getFrames(years, StatesData.states, dataPerState, null);
+	var data = [];
+	for (var i = 0; i < statesData.length; i++)
+		data.push(getMapTrace(i));
+	console.log(statesData.length);
+	console.log(data);
+	var plot = Plotly.newPlot(plotlyMapId, data, getLayout());
 
-	var data = [
-		getDefaultTrace(mapNames[0], dataPerState[0]),
-		//getDefaultTrace(mapNames[1], statesData.asthma[0])
-	];
-
-	//selectedMap = mapNames[0];
-	//traces[0].visible = true;
-
-	layout = getLayout(years);
-
-	var plot = Plotly.newPlot(plotlyMapId, data, layout);
+	console.log(getSliderSteps());
+	console.log(getFrames());
 
 	plot.then(gd => {
-		Plotly.addFrames(plotlyMapId, frames);
+		Plotly.addFrames(plotlyMapId, getFrames());
 		gd.on("plotly_click", d => onStateClick((d.points || [])[0].location));
 		gd.on("plotly_sliderchange", d => {
 			var newYear = d.slider.active;
@@ -49,54 +49,29 @@ d3.json("/raw_data").then(function (rawData, err) {
 				onSliderChange(newYear);
 		});
 		gd.on("plotly_legendclick", d => {
-			var newMap = d.data[d.expandedIndex].name;
-			if (selectedMap !== newMap)
+			var newMap = statesData.mapNames.indexOf(d.data[d.expandedIndex].name);
+			if (selectedMapIndex !== newMap)
 				onLegendChange(newMap);
 		});
 	});
-});
-
-function getFrames(years, locations, values, displayText) {
-
-	var min = Math.min.apply(Math, years);
-	var max = Math.max.apply(Math, years);
-	var length = max - min;
-
-	var frames = []
-
-	for (var i = 0; i <= length; i++)
-		frames[i] = {
-			data: [{
-				z: values[i],
-				locations: locations,
-				text: locations
-			}],
-			name: min + i
-		};
-
-	return frames;
 }
 
-function getDefaultTrace(traceName, values) {
-
-	var max = Math.max(values);
-	var min = Math.min(values);
-
+function getMapTrace(mapIndex) {
 	return {
-		//name: traceName,
+		name: statesData.mapNames[mapIndex],
 		type: 'choropleth',
 		locationmode: 'USA-states',
-		locations: StatesData.states,
-		text: StatesData.states,
-		z: values,
+		locations: States,
+		//text: statesData.displayText,
+		z: statesData.dataPerState[mapIndex][selectedYearIndex],
 		zauto: false,
-		zmin: min,
-		zmax: max,
-		//visible: "legendonly",
-		//showlegend: true,
+		zmin: Math.min.apply(Math, statesData.dataPerState[mapIndex][0]),
+		zmax: Math.max.apply(Math, statesData.dataPerState[mapIndex][statesData.length - 1]),
+		visible: (mapIndex == selectedMapIndex) ? true : "legendonly",
+		showlegend: true,
 		colorscale: colorScale,
 		colorbar: {
-			title: colorLabel,
+			title: statesData.scaleNames[mapIndex],
 			thickness: 15,
 			y: 0.25,
 			len: 0.75,
@@ -105,7 +80,7 @@ function getDefaultTrace(traceName, values) {
 	};
 }
 
-function getLayout(years) {
+function getLayout() {
 	return {
 		showlegend: true,
 		legend: {
@@ -138,71 +113,77 @@ function getLayout(years) {
 				type: "buttons",
 				pad: { "t": 87, "r": 10 },
 				buttons: [
-					{
-						method: "animate",
-						args: [
-							null,
-							{
-								fromcurrent: true,
-								transition: { duration: playDuration, },
-								frame: { duration: playDuration }
-							}
-						],
-						label: "Play"
-					},
-					{
-						method: "animate",
-						args: [
-							[null],
-							{
-								mode: "immediate",
-								transition: { duration: 0 },
-								frame: { duration: 0 }
-							}
-						],
-						label: "Pause"
-					}
+					createPlayLayout(),
+					createPauseLayout()
 				]
 			}
 		],
-		sliders: [
-			{
-				active: selectedYearIndex,
-				steps: getSliderSteps(years),
-				x: 0.1,
-				y: 0,
-				len: 0.9,
-				xanchor: "left",
-				yanchor: "top",
-				pad: { t: 50, b: 10 },
-				currentvalue: {
-					visible: true,
-					prefix: yearPrefix,
-					xanchor: "right",
-					font: {
-						size: 20,
-						//color: "#666"
-					}
-				},
-				transition: {
-					duration: 300,
-					easing: "cubic-in-out"
-				}
-			}
-		]
+		sliders: [createTimeSliderLayout()]
 	};
 }
 
-function getSliderSteps(years) {
+function createPlayLayout() {
+	return {
+		method: "animate",
+		args: [
+			null,
+			{
+				fromcurrent: true,
+				transition: { duration: playDuration, },
+				frame: { duration: playDuration }
+			}
+		],
+		label: "Play"
+	};
+}
 
-	var min = Math.min.apply(Math, years);
-	var max = Math.max.apply(Math, years);
-	var length = max - min;
+function createPauseLayout() {
+	return {
+		method: "animate",
+		args: [
+			[null],
+			{
+				mode: "immediate",
+				transition: { duration: 0 },
+				frame: { duration: 0 }
+			}
+		],
+		label: "Pause"
+	};
+}
+
+function createTimeSliderLayout() {
+	return {
+		active: selectedYearIndex,
+		steps: getSliderSteps(),
+		x: 0.1,
+		y: 0,
+		len: 0.9,
+		xanchor: "left",
+		yanchor: "top",
+		pad: { t: 50, b: 10 },
+		currentvalue: {
+			visible: true,
+			prefix: yearPrefix,
+			xanchor: "right",
+			font: {
+				size: 20,
+				//color: "#666"
+			}
+		},
+		transition: {
+			duration: 300,
+			easing: "cubic-in-out"
+		}
+	};
+}
+
+function getSliderSteps() {
 
 	var sliderSteps = [];
 
-	for (var i = 0; i <= length; i++) {
-		var year = min + i;
+	for (var i = 0; i <= yearsLength; i++) {
+		var year = minYear + i;
 		sliderSteps.push({
 			label: year.toString(),
 			method: "animate",
@@ -220,22 +201,20 @@ function getSliderSteps(years) {
 	return sliderSteps;
 }
 
-function drawStates() {
-	var traces = [
-		getDefaultTrace(mapNames[0], statesData.airQualityByIndex(selectedYearIndex)),
-		getDefaultTrace(mapNames[1], statesData.asthmaByIndex(selectedYearIndex))
-	];
-	var layout = getDefaultLayout();
+function getFrames() {
+	var frames = []
 
-	var selectedMapIndex = mapNames.indexOf(selectedMap);
-	traces[selectedMapIndex].visible = true;
+	for (var i = 0; i <= yearsLength; i++)
+		frames[i] = {
+			data: [{
+				z: statesData.dataPerState[selectedMapIndex][i],
+				locations: States,
+				text: statesData.displayText
+			}],
+			name: minYear + i
+		};
 
-	var plot = Plotly.newPlot(plotlyMapId, traces, layout, { showLink: false });
-
-	plot.then(gd => {
-		gd.on("plotly_click", d => onStateClick((d.points || [])[0].location));
-		gd.on("plotly_legendclick", d => onLegendClick(d.data[d.expandedIndex].name));
-	});
+	return frames;
 }
 
 function onStateClick(stateAbbrev) {
@@ -243,30 +222,11 @@ function onStateClick(stateAbbrev) {
 }
 
 function onSliderChange(yearIndex) {
-	console.log(yearIndex);
+	selectedYearIndex = yearIndex;
+	createPlotlyStatesDisplay();
 }
 
-function onLegendChange(mapName) {
-	console.log(mapName);
-
-	// 	if (graphName == selectedMap)
-	// 		return;
-
-	// 	selectedMap = graphName;
-
-	// 	var index = mapNames.indexOf(selectedMap);
-	// 	 console.log(selectedMap);
-	// 	// console.log(index);
-	// 	// var traces = [
-	// 	// 	getDefaultTrace(mapNames[0], statesData.airQuality[0]),
-	// 	// 	getDefaultTrace(mapNames[1], statesData.asthma[0])
-	// 	// ];
-
-	// 	// for (var i = 0; i < mapNames.length; i++)
-	// 	// 	traces[i].visible = (index == i) ? true : "legendonly";
-	// 	var traces = [{},{}];
-	// 	traces[0].visible =  "legendonly";
-	// 	traces[1].visible = "legendonly";
-
-	// 	Plotly.update(plotlyMapId, traces, layout);
+function onLegendChange(mapIndex) {
+	selectedMapIndex = mapIndex;
+	createPlotlyStatesDisplay();
 }
