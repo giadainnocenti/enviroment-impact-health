@@ -25,6 +25,8 @@ class StatesData {
 	}
 
 	get years() { return this.years; }
+	get airQuality() { return this.airQuality; }
+	get asthma() { return this.asthma; }
 
 	airQualityByIndex(index) {
 		//console.log(index);
