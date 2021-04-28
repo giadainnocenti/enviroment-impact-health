@@ -6,9 +6,6 @@ from sodapy import Socrata
 import requests
 import glob
 
-
-
-
 def add_collection_to_mongo (collection_name, df, mongo_db_conn = mydb):
     mongo_db_conn[collection_name].insert_many(df.to_dict('records'))
     return print(f'{collection_name} stored in the MongoDB database named {mydb}')
@@ -32,13 +29,16 @@ def Get_Data():
     asthma_df = pd.DataFrame.from_records(results)
 
     #list containing the questions of interest for our project
-    questions_OI = ['Asthma mortality rate',                'Emergency department visit rate for asthma',                'Hospitalizations for asthma',                'Current asthma prevalence among adults aged >= 18 years',                'Asthma prevalence among women aged 18-44 years']
+    questions_OI = ['Asthma mortality rate',\
+                    'Emergency department visit rate for asthma',\
+                    'Hospitalizations for asthma',\
+                    'Current asthma prevalence among adults aged >= 18 years',\
+                    'Asthma prevalence among women aged 18-44 years']
 
     #retrieving the unique ID per question so that we address eventual spelling mistakes
     questionids_list=[]
     for question in questions_OI:
         questionids_list += list(asthma_df[asthma_df['question']==question]['questionid'].unique())
-    print(questionids_list)
 
     # filtering the dataset for the questions of interest
     filtered_asthma_df = asthma_df[asthma_df['questionid'].isin(questionids_list)]
@@ -75,9 +75,6 @@ def Get_Data():
     #checking for duplicates
     filtered_asthma_df=filtered_asthma_df.drop_duplicates()
 
-    #checking that there isn't more than one data value entry for the same year and state.
-    duplicateRowsDF = filtered_asthma_df[filtered_asthma_df.duplicated(subset=['year','state_id','state','datasource','question','datavaluetype','datavaluetype','stratificationcategory1','stratification1','locationid','questionid','datavalueunit'], keep=False)]
-
     #keeping only the Overall values
     filtered_asthma_df = filtered_asthma_df[filtered_asthma_df['stratificationcategory1'] == 'Overall']
 
@@ -94,7 +91,6 @@ def Get_Data():
     # adding collection about asthma to MongoDB
     add_collection_to_mongo('asthma',filtered_asthma_df)
 
-
     #finding the name of all the files in the air quality folder
     all_files = glob.glob('./Air_quality_csv/*.csv')
 
@@ -105,7 +101,6 @@ def Get_Data():
         air_list.append(df)
     #creating the concatenated dataframe
     air_df = pd.concat(air_list, axis=0, ignore_index=True)
-
 
     # there is the need to aggregate the data by state and year
     # The output is the average number of days that were over the law limits per parameter of interest (i.e. PMx)
@@ -137,7 +132,6 @@ def Get_Data():
 
     # adding collection about asthma to MongoDB
     add_collection_to_mongo('air',air_df)
-
 
     #closing the connections to sqlite and MongoDB
     mongo_client.close()
