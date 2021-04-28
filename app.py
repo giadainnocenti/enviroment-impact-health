@@ -1,33 +1,36 @@
-from flask import Flask, render_template
+import os
+from flask import Flask, render_template, redirect, json, current_app as app
+from flask_pymongo import PyMongo
+from ETL_datasets import Get_Data
 
+#before starting the flask imports and cleans the datasets
+Get_Data()
+
+# Set up flask
 app = Flask(__name__)
 
-# Use the connection to the database chose
-#conn = "mongodb://localhost:27017/mission_to_mars"
-#client = PyMongo(app, uri=conn)
+# Use flask_pymongo to set up mongo connection
+conn = "mongodb://localhost:27017/health_mongo_db"
+client = PyMongo(app, uri=conn)
 
-#show the main page
 @app.route("/")
 def index():
-    return render_template('main.html')
-#show the regression and ? per state - we probably have to 
-# do a call per state - look into that
-@app.route("/Georgia")
-def healthquality():
-    return render_template('states.html')
-#show the best place to live
-@app.route("/winner")
-def bestplacetolive():
-    return render_template("winner.html")
+    return render_template("index.html")
+	
+@app.route("/state/<state>")
+def state(state):
+    return render_template("state.html",state=state)
 
-@app.route("contacts")
-def contacts():
-    return render_template("contacts.html")
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
-@app.route("/airquality-wildfires")
-def wildfires():
-    return render_template('wildfire.html')
-
+@app.route("/raw_data")
+def raw_data():
+    data_path = os.path.join(app.static_folder, 'data', 'demoData.json')
+    with open(data_path) as raw_data:
+        json_data = json.load(raw_data)
+    return json_data
 
 if __name__ == "__main__":
     app.run(debug=True)
