@@ -2,6 +2,7 @@ class StatesData {
 
 	mapNames = null;
 	scaleNames = null;
+	scaleColors = null;
 	years = null;
 	dataPerState = null;
 	length = 0;
@@ -11,16 +12,19 @@ class StatesData {
 
 		this.mapNames = [];
 		this.scaleNames = [];
+		this.scaleColors = [];
 
 		this.mapNames.push("AirQuality");
 		this.scaleNames.push("Air Quality");
+		this.scaleColors.push([[0, "rgb(255,255,255)"], [1, "rgb(0,0,255)"]]);
 		var yearsAQI = rawData.airQualityIndex
-			.map(d => +d.year)
-			.filter((value, index, self) => self.indexOf(value) === index)
-			.sort();
-
+		.map(d => +d.year)
+		.filter((value, index, self) => self.indexOf(value) === index)
+		.sort();
+		
 		this.mapNames.push("Asthma");
 		this.scaleNames.push("Asthma Rate");
+		this.scaleColors.push([[0, "rgb(255,255,255)"], [1, "rgb(0,0,255)"]]);
 		var yearsAsthma = rawData.asthmaMortalityRate
 			.map(d => +d.year)
 			.filter((value, index, self) => self.indexOf(value) === index)

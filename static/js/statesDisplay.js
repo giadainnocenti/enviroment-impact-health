@@ -7,11 +7,6 @@ const stateSubPath = "state";
 const mapTopMargin = 0;
 const mapBottomMargin = 75;
 
-const colorScale = [
-	[0, "rgb(255,255,255)"],
-	[1, "rgb(0,0,255)"]
-];
-
 var statesData = null;
 var minYear = 0;
 var maxYear = 1;
@@ -69,7 +64,7 @@ function getMapTrace(mapIndex) {
 		zmax: Math.max.apply(Math, statesData.dataPerState[mapIndex][statesData.length - 1]),
 		visible: (mapIndex == selectedMapIndex) ? true : "legendonly",
 		showlegend: true,
-		colorscale: colorScale,
+		colorscale: statesData.scaleColors[mapIndex],
 		colorbar: {
 			title: statesData.scaleNames[mapIndex],
 			thickness: 15,
