@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Home Page{% endblock %}
+{% block headhtml %}
+<!-- D3 and Plotly -->
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+{% endblock %}
+{% block content %}
+<h1 class="cover-heading">Main page.</h1>
+<p class="lead">WIP Display map.</p>
+<div style="max-width: 100%; margin: auto" id="usa-states-map" class="js-plotly-plot"></div>
+<!-- <div>
+	<button id="play-button">Play</button>
+	<input type="range" style="width: 80%" id="datetime-slider" min="0" max="11" value="7" step="1"> 
+	<button id="loop-button">Loop</button>
+	<input type="range" id="datetime-slider" style="width: 80%"  min="0" max="5" value="0" step="1">
+</div> -->
+
+{% endblock %}
+{% block bodyhtml %}
+<!-- d3 JavaScript -->
+<script src="https://d3js.org/d3.v5.min.js"></script>
+
+<!-- Our JS -->
+<script type="text/javascript" src="static/js/States.js"></script>
+<script type="text/javascript" src="static/js/StatesData.js"></script>
+<script type="text/javascript" src="static/js/statesDisplay.js"></script>
+<!-- <script type="text/javascript" src="static/js/config.js"></script>
+<script type="text/javascript" src="static/js/logic.js"></script> -->
+
+{% endblock %}
