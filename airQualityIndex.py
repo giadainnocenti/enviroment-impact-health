@@ -43,7 +43,7 @@ def clean_raw_data(air_quality_index_df):
 
 def get_raw_data():
     # finding the name of all the files in the air quality folder
-    all_files = glob.glob("./air_quality_csv/*.csv")
+    all_files = glob.glob("./Air_quality_csv/*.csv")
 
     aqi_list = []
     # reading all the CSV files
@@ -82,7 +82,7 @@ def update_air_quality_index_database(file_path):
 
 if __name__ == "__main__":
     args = sys.argv
-    file_path = "static/data/enviroment-impact-health.sqlite3"
+    file_path = "static/data/environment-impact-health.sqlite3"
     if (len(args) < 2):
         update_air_quality_index_database(file_path)
     else:

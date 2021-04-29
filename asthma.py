@@ -36,20 +36,20 @@ def clean_raw_data(asthma_df):
     ]
 
     # stratification category => Overall
-    asthma_df = asthma_df[asthma_df['stratificationcategory1'] == 'Overall']
+    asthma_df = asthma_df[asthma_df["stratificationcategory1"] == "Overall"]
     # stratification => Overall
-    asthma_df = asthma_df[asthma_df['stratification1'] == 'Overall']
+    asthma_df = asthma_df[asthma_df["stratification1"] == "Overall"]
     # question => AST1_1 (Current asthma prevalence among adults aged >= 18 years)
-    asthma_df = asthma_df[asthma_df['questionid'] == 'AST1_1']
+    asthma_df = asthma_df[asthma_df["questionid"] == "AST1_1"]
     # => AGEADJPREV (Age-adjusted Prevalence) in %
-    asthma_df = asthma_df[asthma_df['datavaluetypeid'] == 'AGEADJPREV']
+    asthma_df = asthma_df[asthma_df["datavaluetypeid"] == "AGEADJPREV"]
     # dropping of unnecessary columns
     asthma_df = asthma_df.drop(columns=drop_columns)
     # removing missing data values
-    asthma_df = asthma_df[asthma_df['datavalue'].isna() == False]
+    asthma_df = asthma_df[asthma_df["datavalue"].isna() == False]
     # drop territories (PR, GU, VI) and nation-wide data (US)
-    asthma_df = asthma_df[~asthma_df['locationabbr'].isin(
-        ['PR', 'GU', 'VI', 'US'])]
+    asthma_df = asthma_df[~asthma_df["locationabbr"].isin(
+        ["PR", "GU", "VI", "US"])]
     # rename columns
     asthma_df = asthma_df.rename(
         columns={
@@ -63,7 +63,7 @@ def clean_raw_data(asthma_df):
 
 def get_raw_data():
     # Instruction from the CDC website to extract data
-    # Unauthenticated client only works with public data sets. Note 'None'
+    # Unauthenticated client only works with public data sets. Note "None"
     # in place of application token, and no username or password:
     client = Socrata("chronicdata.cdc.gov", None)
 
@@ -77,7 +77,7 @@ def get_raw_data():
 
 def add_table_to_db(table_name, df, conn):
     cur = conn.cursor()
-    df.to_sql(name=table_name, if_exists='replace', con=conn)
+    df.to_sql(name=table_name, if_exists="replace", con=conn)
     return(cur.execute(f"""SELECT * FROM {table_name};""").fetchall())
 
 
@@ -90,7 +90,7 @@ def update_asthma_database(file_path):
         asthma_df = get_raw_data()
         asthma_df = clean_raw_data(asthma_df)
         # adding collection about asthma to sqlite
-        add_table_to_db('asthma', asthma_df, conn)
+        add_table_to_db("asthma", asthma_df, conn)
     except Exception as e:
         print("Error")
         print(e)
@@ -103,7 +103,7 @@ def update_asthma_database(file_path):
 
 if __name__ == "__main__":
     args = sys.argv
-    file_path = "static/data/enviroment-impact-health.sqlite3"
+    file_path = "static/data/environment-impact-health.sqlite3"
     if (len(args) < 2):
         update_asthma_database(file_path)
     else:
