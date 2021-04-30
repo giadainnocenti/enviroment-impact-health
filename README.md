@@ -1,4 +1,4 @@
-# enviroment-impact-health
+# environment-impact-health
 
 # Project Goal
 Dashboard and visualizations to explore air quality and its health effects in the United States.
