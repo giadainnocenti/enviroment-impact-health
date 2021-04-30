@@ -4,8 +4,8 @@ class StatesData {
 	dataPerState = null;
 	length = 0;
 
-	mapNames = ["DaysOzone", "VarDaysPM2.5", "DaysPM10", "MaxAQI", "MedianAQI", "Asthma"];
-	scaleNames = ["Days Ozone", "Days PM2.5", "Days PM10", "Max AQI", "Median AQI", "Asthma Rate"];
+	mapNames = ["Days Ozone", "Days PM2.5", "Days PM10", "Max AQI", "Median AQI", "Asthma Rate"];
+	valueType = ["Days", "Days", "Days", "AQI", "AQI", "%"];
 	scaleColors = [
 		[
 			[0, "rgb(255,255,255)"],
@@ -35,12 +35,12 @@ class StatesData {
 
 	constructor(air_quality_index, asthma) {
 		var yearsAQI = air_quality_index
-			.map(aqi => +aqi.Year)
+			.map(aqi => +aqi["Year"])
 			.filter((value, index, self) => self.indexOf(value) === index)
 			.sort();
 
 		var yearsAsthma = asthma
-			.map(a => +a.year)
+			.map(a => +a["year"])
 			.filter((value, index, self) => self.indexOf(value) === index)
 			.sort();
 
@@ -53,47 +53,44 @@ class StatesData {
 	}
 
 	get mapNames() { return this.mapNames; }
-	get scaleNames() { return this.scaleNames; }
+	get valueType() { return this.valueType; }
 	get displayText() { return StatesData.states; }
 	get years() { return this.years; }
 	get dataPerState() { return this.dataPerState; }
 	get length() { return this.length; }
 
 	static mergeArrays(a, b) {
-		var c = a.concat(b)
-			.filter((value, index, self) => self.indexOf(value) === index)
-			.sort();
-		for (var i = 0; i < c.length; i++)
-			if (a.includes(c[i]) == false) {
-				c.pop(c[i]);
-				i++;
-			}
-			else if (b.includes(c[i]) == false) {
-				c.pop(c[i]);
-				i++;
-			}
+		var c = [];
+		a.forEach(element => {
+			if (b.includes(element))
+				c.push(element);
+		});
+		b.forEach(element => {
+			if (a.includes(element))
+				c.push(element);
+		});
+		c.filter((value, index, self) => self.indexOf(value) === index).sort();
 		return c;
 	}
 
 	static pullOutAirQuality(years, rawData) {
 		// console.log(rawData);
 
-		var y_length = years.length;
+		var length = years.length;
 		var daysOzone = [];
 		var daysPM2_5 = [];
 		var daysPM10 = [];
 		var maxAQI = [];
 		var medianAQI = [];
-		for (var y = 0; y < y_length; y++) {
+		for (var i = 0; i <= length; i++) {
 			daysOzone.push(Array(States.length).fill(-1.0));
 			daysPM2_5.push(Array(States.length).fill(-1.0));
 			daysPM10.push(Array(States.length).fill(-1.0));
 			maxAQI.push(Array(States.length).fill(-1.0));
 			medianAQI.push(Array(States.length).fill(-1.0));
 		}
-		
-		var length = rawData.length;
-		//for (var y = 0; y < y_length; y++)
+
+		length = rawData.length;
 		for (var i = 0; i < length; i++) {
 			var state = States.indexOf(rawData[i]["State"]);
 			var year = years.indexOf(+rawData[i]["Year"]);
@@ -112,11 +109,12 @@ class StatesData {
 	static pullOutAsthma(years, rawData) {
 		// console.log(rawData);
 
-		var y_length = years.length;
+		var length = years.length;
 		var asthma = [];
-		for (var y = 0; y < y_length; y++)
+		for (var i = 0; i <= length; i++)
 			asthma.push(Array(States.length).fill(-1.0));
-		var length = rawData.length;
+
+		length = rawData.length;
 		for (var i = 0; i < length; i++) {
 			var row = rawData[i];
 			var state = States.indexOf(row["state"]);

@@ -16,24 +16,39 @@ var selectedYearIndex = 0;
 
 Promise.all([
 	d3.json("/raw/air_quality_index.json"),
-    d3.json("/raw/asthma.json"),
-]).then(function(files) {
-	statesData = new StatesData(files[0]["air_quality_index"], files[1]["asthma"])
+	d3.json("/raw/asthma.json"),
+]).then(function (files) {
+	statesData = new StatesData(files[0]["air_quality_index"], files[1]["asthma"]);
 	minYear = Math.min.apply(Math, statesData.years);
 	maxYear = Math.max.apply(Math, statesData.years);
 	yearsLength = maxYear - minYear;
 	selectedMapIndex = statesData.length - 1;
-	createPlotlyStatesDisplay();
-}).catch(function(err) {
-    console.error(err);
+	createPlotlyUnitedStatesDisplay();
+}).catch(function (err) {
+	console.error(err);
 })
 
-function createPlotlyStatesDisplay() {
+function onStateClick(stateAbbrev) {
+	window.location.href = `/${stateSubPath}/${stateAbbrev}`;
+}
+
+function onSliderChange(yearIndex) {
+	selectedYearIndex = yearIndex;
+	createPlotlyUnitedStatesDisplay();
+}
+
+function onLegendChange(mapIndex) {
+	selectedMapIndex = mapIndex;
+	createPlotlyUnitedStatesDisplay();
+}
+
+function createPlotlyUnitedStatesDisplay() {
+
 	var data = [];
 	for (var i = 0; i < statesData.length; i++)
-		data.push(getMapTrace(i));
+		data.push(createMapTrace(i));
 
-	var plot = Plotly.newPlot(plotlyMapId, data, getLayout());
+	var plot = Plotly.newPlot(plotlyMapId, data, getLayout(), {scrollZoom: false , showAxisDragHandles : false});
 
 	plot.then(gd => {
 		Plotly.addFrames(plotlyMapId, getFrames());
@@ -51,7 +66,7 @@ function createPlotlyStatesDisplay() {
 	});
 }
 
-function getMapTrace(mapIndex) {
+function createMapTrace(mapIndex) {
 	return {
 		name: statesData.mapNames[mapIndex],
 		type: 'choropleth',
@@ -61,13 +76,13 @@ function getMapTrace(mapIndex) {
 		z: statesData.dataPerState[mapIndex][selectedYearIndex],
 		zauto: false,
 		zmin: 0,
-		zmin:  Math.max(Math.min.apply(Math, statesData.dataPerState[mapIndex][0]), 0),
+		zmin: Math.max(Math.min.apply(Math, statesData.dataPerState[mapIndex][0]), 0),
 		zmax: Math.max.apply(Math, statesData.dataPerState[mapIndex][statesData.length - 1]),
 		visible: (mapIndex == selectedMapIndex) ? true : "legendonly",
 		showlegend: true,
 		colorscale: statesData.scaleColors[mapIndex],
 		colorbar: {
-			title: statesData.scaleNames[mapIndex],
+			title: statesData.mapNames[mapIndex],
 			thickness: 15,
 			x: 0.95,
 			y: 0.4,
@@ -81,8 +96,8 @@ function getLayout() {
 	return {
 		showlegend: true,
 		legend: {
-			x: 0,
-			y: 0.85,
+			x: -0.05,
+			y: 0.95,
 			xanchor: "left",
 		},
 		margin:
@@ -126,8 +141,8 @@ function createPlayLayout() {
 			null,
 			{
 				fromcurrent: true,
-				transition: { duration: playDuration, },
-				frame: { duration: playDuration }
+				transition: { duration: 200, },
+				frame: { duration: 500 }
 			}
 		],
 		label: "Play"
@@ -151,8 +166,7 @@ function createPauseLayout() {
 
 function createTimeSliderLayout() {
 	return {
-		active: 0,
-		//active: selectedYearIndex,
+		active: selectedYearIndex,
 		steps: getSliderSteps(),
 		x: 0.1,
 		y: 0,
@@ -213,18 +227,4 @@ function getFrames() {
 		};
 
 	return frames;
-}
-
-function onStateClick(stateAbbrev) {
-	window.location.href = `/${stateSubPath}/${stateAbbrev}`;
-}
-
-function onSliderChange(yearIndex) {
-	selectedYearIndex = yearIndex;
-	createPlotlyStatesDisplay();
-}
-
-function onLegendChange(mapIndex) {
-	selectedMapIndex = mapIndex;
-	createPlotlyStatesDisplay();
 }
