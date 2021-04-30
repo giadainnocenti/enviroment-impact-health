@@ -1,11 +1,10 @@
-// https://plotly.com/javascript/reference/choropleth/#choropleth-visible
 const plotlyMapId = "usa-states-map";
 
 const yearPrefix = "Year: ";
 const playDuration = 300;
 const stateSubPath = "state";
 const mapTopMargin = 0;
-const mapBottomMargin = 75;
+const mapBottomMargin = 0;
 
 var statesData = null;
 var minYear = 0;
@@ -15,25 +14,26 @@ var yearsLength = 1;
 var selectedMapIndex = 0;
 var selectedYearIndex = 0;
 
-d3.json("/raw_data").then(function (rawData, err) {
-	statesData = new StatesData(rawData);
+Promise.all([
+	d3.json("/raw/air_quality_index.json"),
+    d3.json("/raw/asthma.json"),
+]).then(function(files) {
+	statesData = new StatesData(files[0]["air_quality_index"], files[1]["asthma"])
 	minYear = Math.min.apply(Math, statesData.years);
 	maxYear = Math.max.apply(Math, statesData.years);
 	yearsLength = maxYear - minYear;
+	selectedMapIndex = statesData.length - 1;
 	createPlotlyStatesDisplay();
-});
+}).catch(function(err) {
+    console.error(err);
+})
 
 function createPlotlyStatesDisplay() {
-
 	var data = [];
 	for (var i = 0; i < statesData.length; i++)
 		data.push(getMapTrace(i));
-	console.log(statesData.length);
-	console.log(data);
-	var plot = Plotly.newPlot(plotlyMapId, data, getLayout());
 
-	console.log(getSliderSteps());
-	console.log(getFrames());
+	var plot = Plotly.newPlot(plotlyMapId, data, getLayout());
 
 	plot.then(gd => {
 		Plotly.addFrames(plotlyMapId, getFrames());
@@ -57,10 +57,11 @@ function getMapTrace(mapIndex) {
 		type: 'choropleth',
 		locationmode: 'USA-states',
 		locations: States,
-		//text: statesData.displayText,
+		text: statesData.displayText,
 		z: statesData.dataPerState[mapIndex][selectedYearIndex],
 		zauto: false,
-		zmin: Math.min.apply(Math, statesData.dataPerState[mapIndex][0]),
+		zmin: 0,
+		zmin:  Math.max(Math.min.apply(Math, statesData.dataPerState[mapIndex][0]), 0),
 		zmax: Math.max.apply(Math, statesData.dataPerState[mapIndex][statesData.length - 1]),
 		visible: (mapIndex == selectedMapIndex) ? true : "legendonly",
 		showlegend: true,
@@ -68,9 +69,10 @@ function getMapTrace(mapIndex) {
 		colorbar: {
 			title: statesData.scaleNames[mapIndex],
 			thickness: 15,
-			y: 0.25,
-			len: 0.75,
-			xanchor: "right"
+			x: 0.95,
+			y: 0.4,
+			len: 1,
+			xanchor: "left"
 		}
 	};
 }
@@ -79,9 +81,9 @@ function getLayout() {
 	return {
 		showlegend: true,
 		legend: {
-			x: 1,
+			x: 0,
 			y: 0.85,
-			xanchor: "right",
+			xanchor: "left",
 		},
 		margin:
 		{
@@ -93,7 +95,7 @@ function getLayout() {
 			showland: true,
 			showlakes: true,
 			lakecolor: 'rgb(255, 255, 255)',
-			// subunitcolor: 'rgb(255, 255, 255)',
+			landcolor: 'rgb(255, 255, 255)',
 			lonaxis: {},
 			lataxis: {}
 		},
@@ -149,7 +151,8 @@ function createPauseLayout() {
 
 function createTimeSliderLayout() {
 	return {
-		active: selectedYearIndex,
+		active: 0,
+		//active: selectedYearIndex,
 		steps: getSliderSteps(),
 		x: 0.1,
 		y: 0,

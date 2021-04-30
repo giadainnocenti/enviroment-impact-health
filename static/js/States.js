@@ -7,7 +7,6 @@ const States = [
 	"CO",
 	"CT",
 	"DE",
-	"DC",
 	"FL",
 	"GA",
 	"HI",
