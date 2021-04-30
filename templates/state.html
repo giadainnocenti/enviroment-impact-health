@@ -1,6 +1,46 @@
 {% extends "layout.html" %}
 {% block title %}{{state}}{% endblock %}
+{% block headhtml %}
+<!-- D3 and Plotly -->
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+{% endblock %}
 {% block content %}
 <h1 class="cover-heading">{{state}} State page.</h1>
+
 <p class="lead">WIP Display per state.</p>
+
+<div class="row row-cols-1 row-cols-md-2 g-4">
+	<div class="col">
+		<div class="card border-light">
+			<img  class="img-responsive" style="height:40%; width:40%;" src="/static/images/{{days_ozone_regression}}">
+			<img  class="img-responsive" style="height:40%; width:40%;" src="/static/images/{{days_PM2_5}}">
+			<img  class="img-responsive" style="height:40%; width:40%;" src="/static/images/{{days_PM10}}">
+		</div>
+	</div>
+	<div class="col">
+		<div class="card border-light">
+			<div class="card-body">
+				<h5 class="card-title">Behavioral Risk Factor Surveillance System (BRFSS)</h5>
+				<div id="state-map" class="js-plotly-plot"></div>
+			</div>
+		</div>
+		<br>
+	</div>
+</div>
+
+{% endblock %}
+{% block bodyhtml %}
+<!-- d3 JavaScript -->
+<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+
+<!-- jquery JavaScript -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Our JS -->
+<script type="text/javascript" src="/static/js/States.js"></script>
+<script type="text/javascript" src="/static/js/StatesData.js"></script>
+<script type="text/javascript" src="/static/js/PlotlyState.js"></script>
+
 {% endblock %}
