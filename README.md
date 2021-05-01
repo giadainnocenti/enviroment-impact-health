@@ -43,8 +43,8 @@ Clicking on one state of the map will redirect you to another webpage:
 /state/<state>
 ```
 
-In each state page, the linear regressions, between the cumulative asthma prevalence in the adult population with respect to the high pollution days (PM2.5 and Ozone) are reported along with two linear plots showing the trend of the high pollution days for PM2.5 and Ozone, and the trend of the maximum and median air quality index per year./
-The linear regressions for New Jersey are not reported at this time for data inconsistencies that need to be solved.
+In each state page, the linear regressions, between the cumulative asthma prevalence in the adult population with respect to the high pollution days (PM2.5 and Ozone) are reported along with two linear plots showing the trend of the high pollution days for PM2.5 and Ozone, and the trend of the maximum and median air quality index per year. \
+The linear regressions for _New Jersey_ are not reported at this time for data inconsistencies that need to be solved.
 
 ![GeorgiaPage](images/Georgia_webpage.png)
 ```
