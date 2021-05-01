@@ -14,6 +14,18 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
 		integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 
+	<!-- jquery -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+		integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+	<!-- jsSocials js  -->
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.min.js"></script>
+
+	<!-- jsSocials css -->
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.css" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials-theme-flat.css" rel="stylesheet" />
+
 	<title>{% block title %}{% endblock %}</title>
 
 	{% block headhtml %}{% endblock %}
@@ -30,6 +42,8 @@
 		</main>
 		{% include "includes/_footer.html" %}
 	</div>
+
+	<script type="text/javascript" src="/static/js/SocialSharing.js"></script>
 	{% block bodyhtml %}{% endblock %}
 </body>
 
