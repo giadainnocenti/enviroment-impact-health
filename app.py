@@ -117,6 +117,7 @@ def state(state):
     return render_template(
         "state.html",
         state=state,
+        full_state_name=full_state_name,
         days_ozone_regression=days_ozone_regression,
         days_PM2_5=days_PM2_5
     )
