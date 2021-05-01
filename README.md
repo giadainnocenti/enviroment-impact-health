@@ -40,7 +40,7 @@ Dashboard showing the info-graphics created to show the health and environment t
 Clicking on one state of the map will redirect you to another webpage:
 
 ```
-/state/<state>"
+/state/<state>
 ```
 
 In each state page, the linear regressions, between the cumulative asthma prevalence in the adult population with respect to the high pollution days (PM2.5 and Ozone) are reported along with two linear plots showing the trend of the high pollution days for PM2.5 and Ozone, and the trend of the maximum and median air quality index per year.
