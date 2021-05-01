@@ -54,7 +54,7 @@ The linear regressions for _New Jersey_ are not reported at this time for data i
 
 # Exploratory Analysis Conclusions and Future Outcomes
 * The exploratory data analysis showed that there is **not** a clear linear correlation between asthma prevalence in adults and the days with high PM2.5 and ozone pollution.
-* A correlation between asthma episodes and air pollution (i.e. more acute asthma on high pollution summer date) is reported in the scientific literature [1-4], hence the _possible linear correlation between asthma hospitalization and air pollution_ will be evaluated in the future.
+* A correlation between asthma episodes and air pollution (i.e. more acute asthma on high pollution summer date) is reported in the scientific literature [1-4], hence the _possible linear correlation between asthma hospitalizations and air pollution_ will be evaluated in the future.
 * The _future explanatory data analysis_ aims to highlight what are the best states to live in for people who suffers from asthma. It will be deployed in a successive version of the flask app.
 \
 \
