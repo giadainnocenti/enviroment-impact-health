@@ -114,13 +114,11 @@ def state(state):
     full_state_name = {v: k for k, v in us_state_abbrev.items()}[state]
     days_ozone_regression = full_state_name + "_Days Ozone_regression.png"
     days_PM2_5 = full_state_name + "_Days PM2.5_regression.png"
-    days_PM10 = full_state_name + "_Days PM10_regression.png"
     return render_template(
         "state.html",
         state=state,
         days_ozone_regression=days_ozone_regression,
-        days_PM2_5=days_PM2_5,
-        days_PM10=days_PM10
+        days_PM2_5=days_PM2_5
     )
 
 

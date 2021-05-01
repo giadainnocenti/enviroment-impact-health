@@ -42,7 +42,9 @@ function createPlotlyStateDisplay() {
 		}
 	};
 
-	Plotly.newPlot(plotlyMapId, data, layout);
+	Plotly.newPlot(plotlyMapId + "1", [data[0],data[1]], layout);
+	Plotly.newPlot(plotlyMapId + "2", [data[2],data[3]], layout);
+	//Plotly.newPlot(plotlyMapId + "3", [data[4]], layout);
 }
 
 function createStateMapTrace(index) {
@@ -55,8 +57,8 @@ function createStateMapTrace(index) {
 	return {
 		x: statesData.years,
 		y: values,
-		legendgroup: statesData.valueType[index],
-		marker: { color: statesData.scaleColors[index][1][1] },
+		//legendgroup: statesData.valueType[index],
+		marker: { color: statesData.scaleColors[index][0][1] },
 		name: statesData.mapNames[index],
 		type: 'scatter'
 	};

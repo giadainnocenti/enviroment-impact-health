@@ -9,21 +9,22 @@
 {% block content %}
 <h1 class="cover-heading">{{state}} State page.</h1>
 
-<p class="lead">WIP Display per state.</p>
+<!-- <p class="lead">WIP Display per state.</p> -->
 
 <div class="row row-cols-1 row-cols-md-2 g-4">
 	<div class="col">
 		<div class="card border-light">
-			<img  class="img-responsive" style="height:40%; width:40%;" src="/static/images/{{days_ozone_regression}}">
-			<img  class="img-responsive" style="height:40%; width:40%;" src="/static/images/{{days_PM2_5}}">
-			<img  class="img-responsive" style="height:40%; width:40%;" src="/static/images/{{days_PM10}}">
+			<img  class="img-responsive" style="height: 400px; width: 600px;" src="/static/images/{{days_ozone_regression}}">
+			<img  class="img-responsive" style="height: 400px; width: 600px;" src="/static/images/{{days_PM2_5}}">
 		</div>
 	</div>
 	<div class="col">
 		<div class="card border-light">
 			<div class="card-body">
 				<h5 class="card-title">Behavioral Risk Factor Surveillance System (BRFSS)</h5>
-				<div id="state-map" class="js-plotly-plot"></div>
+				<div id="state-map1" style="height: 400px;" class="js-plotly-plot"></div>
+				<div id="state-map2" style="height: 400px;" class="js-plotly-plot"></div>
+				<!-- <div id="state-map3" class="js-plotly-plot"></div> -->
 			</div>
 		</div>
 		<br>

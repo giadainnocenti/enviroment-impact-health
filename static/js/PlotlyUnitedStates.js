@@ -96,7 +96,7 @@ function getLayout() {
 	return {
 		showlegend: true,
 		legend: {
-			x: -0.05,
+			x: 0.05,
 			y: 0.95,
 			xanchor: "left",
 		},
@@ -125,8 +125,8 @@ function getLayout() {
 				type: "buttons",
 				pad: { "t": 87, "r": 10 },
 				buttons: [
-					createPlayLayout(),
-					createPauseLayout()
+					//createPlayLayout(),
+					//createPauseLayout()
 				]
 			}
 		],
