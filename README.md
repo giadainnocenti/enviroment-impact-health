@@ -7,7 +7,7 @@ _Exploratory data analysis_ of air quality and asthma prevalence in the adult po
 Asthma is a chronic inflammatory disease of the airways whose characteristic symptoms are: wheeze, syspnoea, cough and chest thightness associates with variable expiratory airflow limitation. Data showed that air pollution has a negative impact on asmatic conditions in both adults and children [1].
 The exposure to air pollution represent a significant risk factor for asthma development in children. However, a causal relation between air pollution and development of adult asthma is not established [2-3]. \
 Air pollutants can be divided in gaseous and particulate matter (PM) according to their particle size and physical state. PM are the pollutants with the greatest impact on humans health [1].\
-The air quality goodness is described for the public using the Air Quality Index (AQI) which retrieval change from country to country [4]. It is calculated by using the highest index pollutant among ground-level ozone, PM, carbon monoxide, sulfur dioxide and nitrogen dioxide [4-5].
+The air quality goodness is described for the public using the Air Quality Index (AQI) which is calculated differently from country to country [4]. In the united states, the AQI is calculated by using the highest index pollutant among ground-level ozone, PM, carbon monoxide, sulfur dioxide and nitrogen dioxide [4-5].
 
 # Wireframe Goals
 
