@@ -4,32 +4,28 @@ class StatesData {
 	dataPerState = null;
 	length = 0;
 
-	mapNames = ["Days Ozone", "Days PM2.5", "Days PM10", "Max AQI", "Median AQI", "Asthma Rate"];
-	valueType = ["Days", "Days", "Days", "AQI", "AQI", "%"];
+	mapNames = ["Days Ozone", "Days PM2.5", "Max AQI", "Median AQI", "Asthma Prevalence  "];
+	valueType = ["Days", "Days", "AQI", "AQI", "%"];
 	scaleColors = [
 		[
-			[0, "rgb(255,255,255)"],
-			[1, "rgb(255,0,0)"]
+			[0, "rgb(255,0,0)"],
+			[1, "rgb(0,0,0)"],
 		],
 		[
-			[0, "rgb(255,255,255)"],
-			[1, "rgb(0,255,0)"]
+			[0, "rgb(0,255,0)"],
+			[1, "rgb(0,0,0)"],
 		],
 		[
-			[0, "rgb(255,255,255)"],
-			[1, "rgb(0,0,255)"]
+			[0, "rgb(123,123,255)"],
+			[1, "rgb(0,0,0)"],
 		],
 		[
-			[0, "rgb(255,255,255)"],
-			[1, "rgb(255,255,0)"]
+			[0, "rgb(255,0,255)"],
+			[1, "rgb(0,0,0)"],
 		],
 		[
-			[0, "rgb(255,255,255)"],
-			[1, "rgb(0,255,255)"]
-		],
-		[
-			[0, "rgb(255,255,255)"],
-			[1, "rgb(255,0,255)"]
+			[0, "rgb(0,255,255)"],
+			[1, "rgb(0,0,0)"],
 		],
 	];
 
@@ -79,13 +75,11 @@ class StatesData {
 		var length = years.length;
 		var daysOzone = [];
 		var daysPM2_5 = [];
-		var daysPM10 = [];
 		var maxAQI = [];
 		var medianAQI = [];
 		for (var i = 0; i <= length; i++) {
 			daysOzone.push(Array(States.length).fill(-1.0));
 			daysPM2_5.push(Array(States.length).fill(-1.0));
-			daysPM10.push(Array(States.length).fill(-1.0));
 			maxAQI.push(Array(States.length).fill(-1.0));
 			medianAQI.push(Array(States.length).fill(-1.0));
 		}
@@ -98,12 +92,11 @@ class StatesData {
 			// parse data
 			daysOzone[year][state] = +rawData[i]["Days Ozone"];
 			daysPM2_5[year][state] = +rawData[i]["Days PM2.5"];
-			daysPM10[year][state] = +rawData[i]["Days PM10"];
 			maxAQI[year][state] = +rawData[i]["Max AQI"];
 			medianAQI[year][state] = +rawData[i]["Median AQI"];
 		}
 
-		return [daysOzone, daysPM2_5, daysPM10, maxAQI, medianAQI];
+		return [daysOzone, daysPM2_5, maxAQI, medianAQI];
 	}
 
 	static pullOutAsthma(years, rawData) {
