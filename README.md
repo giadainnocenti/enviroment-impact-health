@@ -2,19 +2,12 @@
 
 # Project Goal
 _Exploratory data analysis_ of air quality and asthma prevalence in the adult population of the United States.
-#(Dashboard and visualizations to explore air quality and its health effects in the United States.)
+
 # Introduction
 Asthma is a chronic inflammatory disease of the airways whose characteristic symptoms are: wheeze, syspnoea, cough and chest thightness associates with variable expiratory airflow limitation. Data showed that air pollution has a negative impact on asmatic conditions in both adults and children [1].
 The exposure to air pollution represent a significant risk factor for asthma development in children. However, a causal relation between air pollution and development of adult asthma is not established [2-3]. \
 Air pollutants can be divided in gaseous and particulate matter (PM) according to their particle size and physical state. PM are the pollutants with the greatest impact on humans health [1].\
 The air quality goodness is described for the public using the Air Quality Index (AQI) which retrieval change from country to country [4]. It is calculated by using the highest index pollutant among ground-level ozone, PM, carbon monoxide, sulfur dioxide and nitrogen dioxide [4-5].
-
-# Instructions
-
-Make sure to run the flask app by changing directory into the main project folder and running:
-```bash 
-python app.py
-```
 
 # Wireframe Goals
 
@@ -63,16 +56,18 @@ In each state page, the linear regressions, between the cumulative asthma preval
 * A correlation between asthma episodes and air pollution (i.e. more acute asthma on high pollution summer date) is reported in the scientific literature [1-4], hence the _possible linear correlation between asthma hospitalization and air pollution_ will be evaluated in the future.
 * The _future explanatory data analysis_ aims to highlight what are the best states to live in for people who suffers from asthma. It will be deployed in a successive version of the flask app.
 
+# Instructions
 
+Make sure to run the flask app by changing directory into the main project folder and running:
+```bash 
+python app.py
+```
 
 # Data
 a. [Asthma](https://chronicdata.cdc.gov/Chronic-Disease-Indicators/U-S-Chronic-Disease-Indicators-Asthma/us8e-ubyj)
 
 b. [Air Quality Index](https://www.epa.gov/outdoor-air-quality-data)
 
-#(c. [Wildfires](https://www.kaggle.com/rtatman/188-million-us-wildfires) (not used))
-
-#(d. [COPD](https://chronicdata.cdc.gov/Chronic-Disease-Indicators/U-S-Chronic-Disease-Indicators-Chronic-Obstructive/aqr6-8kj8) (not used))
 
 # References
 1. https://doi.org/10.3390/ijerph17176212
