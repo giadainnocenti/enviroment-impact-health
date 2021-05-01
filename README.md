@@ -31,7 +31,7 @@ This LiveWellsStates page is our attempt to create a "so what?" answer with our 
 
 Check us out!
 
-# Flask Structure and final product developed
+# Flask Structure and Final Product Developed
 ```
 /
 ```
