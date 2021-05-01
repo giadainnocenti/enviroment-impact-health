@@ -82,7 +82,7 @@ def get_raw_data(db):
         for row in cur.fetchall():
             header.append(row[1])
 
-        # grab and clean the data
+        # grab the data
         cur = conn.cursor()
         cur.execute(f"SELECT * FROM {db}")
         for row in cur.fetchall():
