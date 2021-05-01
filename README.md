@@ -56,7 +56,8 @@ In each state page, the linear regressions, between the cumulative asthma preval
 * A correlation between asthma episodes and air pollution (i.e. more acute asthma on high pollution summer date) is reported in the scientific literature [1-4], hence the _possible linear correlation between asthma hospitalization and air pollution_ will be evaluated in the future.
 * The _future explanatory data analysis_ aims to highlight what are the best states to live in for people who suffers from asthma. It will be deployed in a successive version of the flask app.
 \
-You can find our google drive presentation [here](https://docs.google.com/presentation/d/18cfbceX5xHeAldeWCMJkwfJVVvKyMz7DP46UnDqrzfw/edit?ts=608ca6c4#slide=id.g1f87997393_0_1226)
+\
+Google drive presentation [here](https://docs.google.com/presentation/d/18cfbceX5xHeAldeWCMJkwfJVVvKyMz7DP46UnDqrzfw/edit?ts=608ca6c4#slide=id.g1f87997393_0_1226)
 
 # Instructions
 
